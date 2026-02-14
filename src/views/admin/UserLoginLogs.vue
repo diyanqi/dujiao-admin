@@ -118,74 +118,75 @@ onMounted(() => {
       <h1 class="text-2xl font-semibold">{{ t('admin.userLoginLogs.title') }}</h1>
     </div>
 
-    <div class="rounded-xl border border-border bg-card p-4">
-      <div class="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-        <Input
-          v-model="filters.userId"
-          type="number"
-          min="1"
-          :placeholder="t('admin.userLoginLogs.filterUserId')"
-          class="h-9"
-          @update:modelValue="handleSearch"
-        />
-        <Input
-          v-model="filters.email"
-          type="text"
-          :placeholder="t('admin.userLoginLogs.filterEmail')"
-          class="h-9"
-          @update:modelValue="handleSearch"
-        />
-        <Input
-          v-model="filters.clientIp"
-          type="text"
-          :placeholder="t('admin.userLoginLogs.filterClientIp')"
-          class="h-9"
-          @update:modelValue="handleSearch"
-        />
-        <Select v-model="filters.status" @update:modelValue="handleSearch">
-          <SelectTrigger class="h-9 w-full">
-            <SelectValue :placeholder="t('admin.userLoginLogs.filterStatusAll')" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="__all__">{{ t('admin.userLoginLogs.filterStatusAll') }}</SelectItem>
-            <SelectItem value="success">{{ t('admin.userLoginLogs.status.success') }}</SelectItem>
-            <SelectItem value="failed">{{ t('admin.userLoginLogs.status.failed') }}</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-
-      <div class="mt-3 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-        <Select v-model="filters.failReason" @update:modelValue="handleSearch">
-          <SelectTrigger class="h-9 w-full">
-            <SelectValue :placeholder="t('admin.userLoginLogs.filterFailReasonAll')" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="__all__">{{ t('admin.userLoginLogs.filterFailReasonAll') }}</SelectItem>
-            <SelectItem v-for="item in failReasonOptions" :key="item" :value="item">
-              {{ failReasonLabel(item) }}
-            </SelectItem>
-          </SelectContent>
-        </Select>
-        <div class="col-span-1 md:col-span-2 xl:col-span-2 flex items-center gap-2">
+    <div class="rounded-xl border border-border bg-card p-4 shadow-sm">
+      <div class="flex flex-wrap items-center gap-3">
+        <div class="w-full md:w-32">
+          <Input
+            v-model="filters.userId"
+            type="number"
+            min="1"
+            :placeholder="t('admin.userLoginLogs.filterUserId')"
+            @update:modelValue="handleSearch"
+          />
+        </div>
+        <div class="w-full md:w-48">
+          <Input
+            v-model="filters.email"
+            type="text"
+            :placeholder="t('admin.userLoginLogs.filterEmail')"
+            @update:modelValue="handleSearch"
+          />
+        </div>
+        <div class="w-full md:w-36">
+          <Input
+            v-model="filters.clientIp"
+            type="text"
+            :placeholder="t('admin.userLoginLogs.filterClientIp')"
+            @update:modelValue="handleSearch"
+          />
+        </div>
+        <div class="w-full md:w-40">
+          <Select v-model="filters.status" @update:modelValue="handleSearch">
+            <SelectTrigger class="h-9 w-full">
+              <SelectValue :placeholder="t('admin.userLoginLogs.filterStatusAll')" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="__all__">{{ t('admin.userLoginLogs.filterStatusAll') }}</SelectItem>
+              <SelectItem value="success">{{ t('admin.userLoginLogs.status.success') }}</SelectItem>
+              <SelectItem value="failed">{{ t('admin.userLoginLogs.status.failed') }}</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div class="w-full md:w-48">
+          <Select v-model="filters.failReason" @update:modelValue="handleSearch">
+            <SelectTrigger class="h-9 w-full">
+              <SelectValue :placeholder="t('admin.userLoginLogs.filterFailReasonAll')" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="__all__">{{ t('admin.userLoginLogs.filterFailReasonAll') }}</SelectItem>
+              <SelectItem v-for="item in failReasonOptions" :key="item" :value="item">
+                {{ failReasonLabel(item) }}
+              </SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="text-xs text-muted-foreground whitespace-nowrap">{{ t('admin.userLoginLogs.filterCreatedFrom') }}</span>
           <Input
             v-model="filters.createdFrom"
             type="datetime-local"
-            class="h-9 w-full"
-            :placeholder="t('admin.userLoginLogs.filterCreatedFrom')"
+            class="h-9 w-full md:w-auto"
             @update:modelValue="handleSearch"
           />
           <span class="text-muted-foreground">-</span>
           <Input
             v-model="filters.createdTo"
             type="datetime-local"
-            class="h-9 w-full"
-            :placeholder="t('admin.userLoginLogs.filterCreatedTo')"
+            class="h-9 w-full md:w-auto"
             @update:modelValue="handleSearch"
           />
         </div>
-      </div>
-
-      <div class="mt-4 flex justify-end gap-2">
+        <div class="flex-1"></div>
         <Button size="sm" variant="outline" @click="refresh">{{ t('admin.common.refresh') }}</Button>
       </div>
     </div>

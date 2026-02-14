@@ -241,8 +241,7 @@ onMounted(() => {
             @update:modelValue="handleSearch"
           />
         </div>
-      </div>
-      <div class="mt-4 flex justify-end gap-2">
+        <div class="flex-1"></div>
         <Button size="sm" variant="outline" @click="resetFilters">{{ t('admin.common.reset') }}</Button>
         <Button size="sm" @click="refresh">{{ t('admin.common.refresh') }}</Button>
       </div>

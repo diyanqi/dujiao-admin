@@ -317,20 +317,23 @@ watch(
     </div>
 
     <div class="rounded-xl border border-border bg-card p-4 shadow-sm">
-      <div class="grid grid-cols-1 gap-3 md:grid-cols-3">
-        <Input v-model="filters.code" :placeholder="t('admin.coupons.filterCode')" @update:modelValue="handleSearch" />
-        <Select v-model="filters.isActive" @update:modelValue="handleSearch">
-          <SelectTrigger class="h-9 w-full">
-          <SelectValue :placeholder="t('admin.coupons.filterStatusAll')" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="__all__">{{ t('admin.coupons.filterStatusAll') }}</SelectItem>
-            <SelectItem value="true">{{ t('admin.common.enabled') }}</SelectItem>
-            <SelectItem value="false">{{ t('admin.common.disabled') }}</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-      <div class="mt-4 flex justify-end gap-2">
+      <div class="flex flex-wrap items-center gap-3">
+        <div class="w-full md:w-48">
+          <Input v-model="filters.code" :placeholder="t('admin.coupons.filterCode')" @update:modelValue="handleSearch" />
+        </div>
+        <div class="w-full md:w-48">
+          <Select v-model="filters.isActive" @update:modelValue="handleSearch">
+            <SelectTrigger class="h-9 w-full">
+            <SelectValue :placeholder="t('admin.coupons.filterStatusAll')" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="__all__">{{ t('admin.coupons.filterStatusAll') }}</SelectItem>
+              <SelectItem value="true">{{ t('admin.common.enabled') }}</SelectItem>
+              <SelectItem value="false">{{ t('admin.common.disabled') }}</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div class="flex-1"></div>
         <Button size="sm" @click="refresh">{{ t('admin.common.refresh') }}</Button>
       </div>
     </div>

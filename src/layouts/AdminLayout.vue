@@ -197,7 +197,7 @@ onMounted(() => {
 <template>
   <div class="min-h-screen bg-background text-foreground">
     <div class="flex min-h-screen">
-      <aside class="w-64 border-r border-border bg-card flex flex-col">
+      <aside class="w-64 border-r border-border bg-card flex flex-col sticky top-0 h-screen overflow-y-auto">
         <div class="px-6 py-6">
           <div class="text-xl font-semibold tracking-tight">
             {{ t('admin.brand') }}

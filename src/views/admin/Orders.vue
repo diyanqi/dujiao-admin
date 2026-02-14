@@ -462,8 +462,7 @@ watch(
             </SelectContent>
           </Select>
         </div>
-      </div>
-      <div class="mt-4 flex justify-end gap-2">
+        <div class="flex-1"></div>
         <Button size="sm" @click="refresh">{{ t('admin.common.refresh') }}</Button>
       </div>
     </div>

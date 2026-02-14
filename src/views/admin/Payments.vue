@@ -280,8 +280,7 @@ watch(
             </SelectContent>
           </Select>
         </div>
-      </div>
-      <div class="mt-4 flex justify-end gap-2">
+        <div class="flex-1"></div>
         <Button size="sm" variant="outline" @click="refresh">{{ t('admin.common.refresh') }}</Button>
         <Button size="sm" :disabled="exporting" @click="handleExport">
           {{ exporting ? t('admin.payments.exporting') : t('admin.payments.export') }}
