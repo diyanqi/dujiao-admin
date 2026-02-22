@@ -39,6 +39,7 @@ const tabs = computed(() => [
   { label: t('admin.settings.tabs.legal'), value: 'legal' },
   { label: t('admin.settings.tabs.smtp'), value: 'smtp' },
   { label: t('admin.settings.tabs.captcha'), value: 'captcha' },
+  { label: t('admin.settings.tabs.telegram'), value: 'telegram' },
   { label: t('admin.settings.tabs.dashboard'), value: 'dashboard' },
   { label: t('admin.settings.tabs.security'), value: 'security' },
 ])
@@ -179,6 +180,15 @@ const captchaForm = reactive({
   },
 })
 
+const telegramForm = reactive({
+  enabled: false,
+  bot_username: '',
+  bot_token: '',
+  has_bot_token: false,
+  login_expire_seconds: 300,
+  replay_ttl_seconds: 300,
+})
+
 const dashboardForm = reactive({
   alert: {
     low_stock_threshold: 5,
@@ -227,10 +237,11 @@ const notifyErrorIfNeeded = (err: unknown, fallback: string) => {
 const fetchSettings = async () => {
   loading.value = true
   try {
-    const [siteRes, smtpRes, captchaRes, dashboardRes] = await Promise.all([
+    const [siteRes, smtpRes, captchaRes, telegramRes, dashboardRes] = await Promise.all([
       adminAPI.getSettings({ key: 'site_config' }),
       adminAPI.getSMTPSettings(),
       adminAPI.getCaptchaSettings(),
+      adminAPI.getTelegramAuthSettings(),
       adminAPI.getSettings({ key: 'dashboard_config' }),
     ])
 
@@ -327,6 +338,16 @@ const fetchSettings = async () => {
       captchaForm.turnstile.has_secret = !!captcha.turnstile?.has_secret
       captchaForm.turnstile.verify_url = String(captcha.turnstile?.verify_url || 'https://challenges.cloudflare.com/turnstile/v0/siteverify')
       captchaForm.turnstile.timeout_ms = normalizeNumber(captcha.turnstile?.timeout_ms, 2000)
+    }
+
+    if (telegramRes.data && telegramRes.data.data) {
+      const telegram = telegramRes.data.data as any
+      telegramForm.enabled = !!telegram.enabled
+      telegramForm.bot_username = String(telegram.bot_username || '')
+      telegramForm.bot_token = ''
+      telegramForm.has_bot_token = !!telegram.has_bot_token
+      telegramForm.login_expire_seconds = normalizeNumber(telegram.login_expire_seconds, 300)
+      telegramForm.replay_ttl_seconds = normalizeNumber(telegram.replay_ttl_seconds, 300)
     }
 
     if (dashboardRes.data && dashboardRes.data.data) {
@@ -447,6 +468,23 @@ const saveCaptchaSettings = async () => {
   captchaForm.turnstile.has_secret = !!data?.turnstile?.has_secret || captchaForm.turnstile.has_secret
 }
 
+const saveTelegramAuthSettings = async () => {
+  const payload: Record<string, unknown> = {
+    enabled: telegramForm.enabled,
+    bot_username: telegramForm.bot_username,
+    login_expire_seconds: Number(telegramForm.login_expire_seconds),
+    replay_ttl_seconds: Number(telegramForm.replay_ttl_seconds),
+  }
+  if (telegramForm.bot_token.trim() !== '') {
+    payload.bot_token = telegramForm.bot_token.trim()
+  }
+
+  const res = await adminAPI.updateTelegramAuthSettings(payload)
+  const data = res.data?.data as any
+  telegramForm.bot_token = ''
+  telegramForm.has_bot_token = !!data?.has_bot_token || telegramForm.has_bot_token
+}
+
 const saveDashboardSettings = async () => {
   const normalized = {
     alert: {
@@ -482,6 +520,8 @@ const saveSettings = async () => {
       await saveSMTPSettings()
     } else if (currentTab.value === 'captcha') {
       await saveCaptchaSettings()
+    } else if (currentTab.value === 'telegram') {
+      await saveTelegramAuthSettings()
     } else if (currentTab.value === 'dashboard') {
       await saveDashboardSettings()
     } else {
@@ -1003,6 +1043,45 @@ onMounted(() => {
                 <label class="text-xs font-medium text-muted-foreground">{{ t('admin.settings.captcha.turnstile.timeoutMS') }}</label>
                 <Input v-model.number="captchaForm.turnstile.timeout_ms" type="number" min="500" max="10000" />
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div v-show="currentTab === 'telegram'" class="space-y-6">
+      <div class="rounded-xl border border-border bg-card">
+        <div class="border-b border-border bg-muted/40 px-6 py-4">
+          <h2 class="text-lg font-semibold">{{ t('admin.settings.telegram.title') }}</h2>
+          <p class="mt-1 text-xs text-muted-foreground">{{ t('admin.settings.telegram.subtitle') }}</p>
+        </div>
+
+        <div class="space-y-6 p-6">
+          <div class="flex items-center gap-3 rounded-lg border border-border bg-muted/20 px-4 py-3">
+            <input id="telegram-auth-enabled" v-model="telegramForm.enabled" type="checkbox" class="h-4 w-4 accent-primary" />
+            <label for="telegram-auth-enabled" class="text-sm font-medium">{{ t('admin.settings.telegram.enabled') }}</label>
+          </div>
+
+          <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <div class="space-y-2">
+              <label class="text-xs font-medium text-muted-foreground">{{ t('admin.settings.telegram.botUsername') }}</label>
+              <Input v-model="telegramForm.bot_username" :placeholder="t('admin.settings.telegram.botUsernamePlaceholder')" />
+            </div>
+            <div class="space-y-2">
+              <label class="text-xs font-medium text-muted-foreground">{{ t('admin.settings.telegram.botToken') }}</label>
+              <Input v-model="telegramForm.bot_token" type="password" :placeholder="t('admin.settings.telegram.botTokenPlaceholder')" />
+              <p class="text-xs text-muted-foreground">
+                {{ telegramForm.has_bot_token ? t('admin.settings.telegram.botTokenHintKeep') : t('admin.settings.telegram.botTokenHintEmpty') }}
+              </p>
+            </div>
+            <div class="space-y-2">
+              <label class="text-xs font-medium text-muted-foreground">{{ t('admin.settings.telegram.loginExpireSeconds') }}</label>
+              <Input v-model.number="telegramForm.login_expire_seconds" type="number" min="30" max="86400" />
+            </div>
+            <div class="space-y-2">
+              <label class="text-xs font-medium text-muted-foreground">{{ t('admin.settings.telegram.replayTTLSeconds') }}</label>
+              <Input v-model.number="telegramForm.replay_ttl_seconds" type="number" min="60" max="86400" />
             </div>
           </div>
         </div>
