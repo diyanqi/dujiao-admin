@@ -1330,7 +1330,7 @@ const messages = {
           subtitle: '配置用户前台 Telegram 一键登录能力',
           enabled: '启用 Telegram 登录',
           botUsername: 'Bot 用户名',
-          botUsernamePlaceholder: '例如：dujiao_auth_bot（不含@）',
+          botUsernamePlaceholder: '例如：dujiao_auth_bot（不含 at 符号）',
           botToken: 'Bot Token',
           botTokenPlaceholder: '留空表示保持不变',
           botTokenHintKeep: '当前已存在 Bot Token，留空将保持不变',
@@ -2701,7 +2701,7 @@ const messages = {
           subtitle: '配置用戶前台 Telegram 一鍵登入能力',
           enabled: '啟用 Telegram 登入',
           botUsername: 'Bot 使用者名稱',
-          botUsernamePlaceholder: '例如：dujiao_auth_bot（不含@）',
+          botUsernamePlaceholder: '例如：dujiao_auth_bot（不含 at 符號）',
           botToken: 'Bot Token',
           botTokenPlaceholder: '留空表示保持不變',
           botTokenHintKeep: '目前已存在 Bot Token，留空將保持不變',
@@ -4072,7 +4072,7 @@ const messages = {
           subtitle: 'Configure one-click Telegram login for frontend users',
           enabled: 'Enable Telegram login',
           botUsername: 'Bot username',
-          botUsernamePlaceholder: 'e.g. dujiao_auth_bot (without @)',
+          botUsernamePlaceholder: 'e.g. dujiao_auth_bot (without the at sign)',
           botToken: 'Bot token',
           botTokenPlaceholder: 'Leave blank to keep current token',
           botTokenHintKeep: 'Bot token is already configured. Leave blank to keep it.',
@@ -4116,11 +4116,29 @@ const messages = {
   },
 }
 
+const sanitizeLinkedMessage = <T>(value: T): T => {
+  if (typeof value === 'string') {
+    return value.replace(/@/g, "{'@'}") as T
+  }
+  if (Array.isArray(value)) {
+    return value.map((item) => sanitizeLinkedMessage(item)) as T
+  }
+  if (value && typeof value === 'object') {
+    const record = value as Record<string, unknown>
+    const next: Record<string, unknown> = {}
+    Object.keys(record).forEach((key) => {
+      next[key] = sanitizeLinkedMessage(record[key])
+    })
+    return next as T
+  }
+  return value
+}
+
 const i18n = createI18n({
   legacy: false,
   locale: 'zh-CN',
   fallbackLocale: 'zh-CN',
-  messages,
+  messages: sanitizeLinkedMessage(messages),
 })
 
 export default i18n
