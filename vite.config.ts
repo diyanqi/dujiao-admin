@@ -15,17 +15,18 @@ const cfAsyncModuleScriptPlugin = () => ({
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [vue(), cfAsyncModuleScriptPlugin()],
+  base: process.env.GITHUB_PAGES === 'true' ? '/admin/' : '/',
   server: {
     host: '0.0.0.0',
     port: 5174,
     strictPort: true,
     proxy: {
       '/api': {
-        target: 'http://localhost:8080',
+        target: 'https://api.mmi.zone',
         changeOrigin: true,
       },
       '/uploads': {
-        target: 'http://localhost:8080',
+        target: 'https://api.mmi.zone',
         changeOrigin: true,
       },
     },
