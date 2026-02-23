@@ -15,7 +15,7 @@ const cfAsyncModuleScriptPlugin = () => ({
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [vue(), cfAsyncModuleScriptPlugin()],
-  base: process.env.GITHUB_PAGES === 'true' ? '/admin/' : '/',
+  base: process.env.VITE_PUBLIC_BASE || '/',
   server: {
     host: '0.0.0.0',
     port: 5174,
