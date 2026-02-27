@@ -108,6 +108,12 @@ const routes = [
         meta: { permission: 'GET:/admin/settings' },
       },
       {
+        path: 'skills',
+        name: 'skills',
+        component: () => import('@/views/admin/Skills.vue'),
+        meta: { permission: 'GET:/admin/skills' },
+      },
+      {
         path: 'authz',
         name: 'authz',
         component: () => import('@/views/admin/Authz.vue'),

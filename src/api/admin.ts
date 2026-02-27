@@ -127,6 +127,33 @@ export interface AdminExportCardSecretsPayload {
   format: 'txt' | 'csv'
 }
 
+export interface AdminSkill {
+  id: number
+  name: string
+  description?: string
+  system_prompt: string
+  enabled_tools: string[]
+  status: 'active' | 'inactive'
+  created_at: string
+  updated_at: string
+}
+
+export interface AdminCreateSkillPayload {
+  name: string
+  description?: string
+  system_prompt: string
+  enabled_tools?: string[]
+  status?: 'active' | 'inactive'
+}
+
+export interface AdminUpdateSkillPayload {
+  name?: string
+  description?: string
+  system_prompt?: string
+  enabled_tools?: string[]
+  status?: 'active' | 'inactive'
+}
+
 export const adminAPI = {
   login: (data: AdminLoginRequest) => api.post<ApiResponse<AdminLoginResponse>>('/admin/login', data),
   getAuthzMe: () => api.get<ApiResponse<AdminAuthzMeResponse>>('/admin/authz/me'),
@@ -241,4 +268,9 @@ export const adminAPI = {
   getCardSecretStats: (params?: any) => api.get<ApiResponse>('/admin/card-secrets/stats', { params }),
   getCardSecretBatches: (params?: any) => api.get<ApiResponse>('/admin/card-secrets/batches', { params }),
   getCardSecretTemplate: () => api.get<ApiResponse>('/admin/card-secrets/template'),
+  getSkills: (params?: any) => api.get<ApiResponse<AdminSkill[]>>('/admin/skills', { params }),
+  getSkill: (id: number) => api.get<ApiResponse<AdminSkill>>(`/admin/skills/${id}`),
+  createSkill: (data: AdminCreateSkillPayload) => api.post<ApiResponse<AdminSkill>>('/admin/skills', data),
+  updateSkill: (id: number, data: AdminUpdateSkillPayload) => api.put<ApiResponse<AdminSkill>>(`/admin/skills/${id}`, data),
+  deleteSkill: (id: number) => api.delete<ApiResponse>(`/admin/skills/${id}`),
 }

@@ -21,6 +21,7 @@ import {
   ScrollText,
   Sun,
   Moon,
+  BrainCircuit,
 } from 'lucide-vue-next'
 import { Button } from '@/components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -135,6 +136,12 @@ const navItems = computed<NavItem[]>(() => {
       icon: Settings,
       to: '/settings',
       permission: 'GET:/admin/settings',
+    },
+    {
+      label: t('admin.nav.skills'),
+      icon: BrainCircuit,
+      to: '/skills',
+      permission: 'GET:/admin/skills',
     },
     {
       label: authzNavLabel.value,
