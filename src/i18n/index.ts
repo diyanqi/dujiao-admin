@@ -207,6 +207,9 @@ const messages = {
       login: {
         title: '后台登录',
         subtitle: '请输入管理员账号与密码',
+        brandTitle: 'Dujiao 管理系统',
+        brandSubtitle: '内部管理后台',
+        brandDescription: '仅供授权管理员使用。本系统不是公开登录入口。',
         username: '用户名',
         password: '密码',
         captchaLabel: '验证码',
@@ -1655,6 +1658,9 @@ const messages = {
       login: {
         title: '後台登入',
         subtitle: '請輸入管理員帳號與密碼',
+        brandTitle: 'Dujiao 管理系統',
+        brandSubtitle: '內部管理後台',
+        brandDescription: '僅供授權管理員使用。本系統不是公開登入入口。',
         username: '使用者名稱',
         password: '密碼',
         captchaLabel: '驗證碼',
@@ -3103,6 +3109,9 @@ const messages = {
       login: {
         title: 'Admin Login',
         subtitle: 'Enter your admin credentials',
+        brandTitle: 'Dujiao Management System',
+        brandSubtitle: 'Internal Administrative Dashboard',
+        brandDescription: 'For authorized administrators only. This system is not a public login portal.',
         username: 'Username',
         password: 'Password',
         captchaLabel: 'Captcha',
